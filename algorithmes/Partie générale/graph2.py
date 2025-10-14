@@ -188,6 +188,41 @@ class Graph:
 
         return dist
 
+    # ----------------------
+    # Affichage lisible du graphe
+    # ----------------------
+    # ----------------------
+    # Affichage graphique du graphe
+    # ----------------------
+    def afficher_graphe_graphique(self):
+        import networkx as nx
+        import matplotlib.pyplot as plt
+
+        # Création du graphe NetworkX
+        G = nx.Graph() if not self.directed else nx.DiGraph()
+
+        # Ajout des arêtes et des poids
+        for u in self.graph:
+            for v, w in self.graph[u]:
+                G.add_edge(u, v, weight=w)
+
+        # Position automatique des sommets
+        pos = nx.spring_layout(G, seed=42)  # disposition harmonieuse
+
+        # Dessin du graphe
+        plt.figure(figsize=(10, 7))
+        nx.draw_networkx_nodes(G, pos, node_color='skyblue', node_size=1200, edgecolors='black')
+        nx.draw_networkx_edges(G, pos, width=2)
+        nx.draw_networkx_labels(G, pos, font_size=10, font_weight='bold')
+
+        # Poids des arêtes
+        edge_labels = nx.get_edge_attributes(G, 'weight')
+        nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_color='red', font_size=9)
+
+        plt.title("Réseau routier des villes", fontsize=14, fontweight='bold')
+        plt.axis('off')
+        plt.show()
+
     # --------------------------------------------------------
     # Exemple d’utilisation
     # --------------------------------------------------------
@@ -232,6 +267,8 @@ if __name__ == "__main__":
 
         # Nancy
         g.add_edge("Nancy", "Grenoble", 80)
+
+        g.afficher_graphe_graphique()
 
         # --- Démonstrations identiques à ton exemple ---
         print("=== Parcours ===")
