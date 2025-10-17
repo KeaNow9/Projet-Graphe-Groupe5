@@ -25,33 +25,33 @@ class Graph:
     # BFS
     # ----------------------
     def bfs(self, start):
-        visited = set()
-        queue = [start]  # liste normale utilisée comme file
-        order = []
+        visited = set()  # Pour mémoriser les sommets déjà visités
+        queue = [start]  # File d'attente (FIFO) avec le sommet de départ
+        order = []  # Ordre de visite des sommets
 
-        while queue:
-            node = queue.pop(0)  # retire le premier élément
+        while queue:  # Tant que la file n'est pas vide
+            node = queue.pop(0)  # Retirer le premier élément (comme une file)
             if node not in visited:
-                visited.add(node)
-                order.append(node)
-                for neighbor, _ in self.graph[node]:
+                visited.add(node)  # Marquer comme visité
+                order.append(node)  # Ajouter à l'ordre de parcours
+                for neighbor, _ in self.graph[node]:  # Parcourir ses voisins
                     if neighbor not in visited:
-                        queue.append(neighbor)
+                        queue.append(neighbor)  # Ajouter les voisins à la file
         return order
 
     # ----------------------
     # DFS
     # ----------------------
     def dfs(self, start):
-        visited = set()
-        order = []
+        visited = set()  # Pour mémoriser les sommets déjà visités
+        order = []  # Ordre de visite
 
         def explore(node):
-            visited.add(node)
-            order.append(node)
+            visited.add(node)  # Marquer comme visité
+            order.append(node)  # Enregistrer l'ordre
             for neighbor, _ in self.graph[node]:
                 if neighbor not in visited:
-                    explore(neighbor)
+                    explore(neighbor)  # Appel récursif
 
         explore(start)
         return order
@@ -61,40 +61,22 @@ class Graph:
     # ----------------------
     def kruskal(self):
         if self.directed:
-            raise ValueError("Kruskal ne peut être utilisé que sur un graphe non orienté !")
+            raise ValueError("Kruskal ne s'applique qu'aux graphes non orientés !")
 
-        parent = {}
-        rank = {}
+        parent = {n: n for n in self.graph}
 
         def find(n):
-            if parent[n] != n:
-                parent[n] = find(parent[n])
-            return parent[n]
+            while parent[n] != n:
+                n = parent[n]
+            return n
 
-        def union(n1, n2):
-            r1, r2 = find(n1), find(n2)
-            if r1 != r2:
-                if rank[r1] < rank[r2]:
-                    parent[r1] = r2
-                elif rank[r1] > rank[r2]:
-                    parent[r2] = r1
-                else:
-                    parent[r2] = r1
-                    rank[r1] += 1
-
-        for node in self.graph:
-            parent[node] = node
-            rank[node] = 0
-
-        mst = []
-        total_cost = 0
-        for w, u, v in sorted(self.edges):
+        mst, total = [], 0
+        for w, u, v in sorted(self.edges):  # tri automatique par le poids
             if find(u) != find(v):
-                union(u, v)
+                parent[find(v)] = find(u)
                 mst.append((u, v, w))
-                total_cost += w
-
-        return mst, total_cost
+                total += w
+        return mst, total
 
     # ----------------------
     # Prim
@@ -130,23 +112,37 @@ class Graph:
     # Dijkstra
     # ----------------------
     def dijkstra(self, start):
+        print(f"\n=== Algorithme de Dijkstra (depuis {start}) ===")
+        # Initialisation
         dist = {node: math.inf for node in self.graph}
         dist[start] = 0
-        pq = [(0, start)]  # liste simple
+        visited = set()
+        while len(visited) < len(self.graph):
+            # Trouver le nœud non visité avec la plus petite distance
+            min_node = None
+            min_dist = math.inf
+            for node in self.graph:
+                if node not in visited and dist[node] < min_dist:
+                    min_dist = dist[node]
+                    min_node = node
 
-        while pq:
-            # chercher le sommet avec la plus petite distance
-            min_index = 0
-            for i in range(len(pq)):
-                if pq[i][0] < pq[min_index][0]:
-                    min_index = i
-            d, node = pq.pop(min_index)
+            if min_node is None:
+                break  # Tous les nœuds atteignables ont été visités
 
-            for neighbor, w in self.graph[node]:
-                new_d = d + w
-                if new_d < dist[neighbor]:
-                    dist[neighbor] = new_d
-                    pq.append((new_d, neighbor))
+            # Marquer le nœud comme visité
+            visited.add(min_node)
+
+            # Mettre à jour les distances des voisins
+            for neighbor, weight in self.graph[min_node]:
+                if neighbor not in visited:
+                    new_dist = dist[min_node] + weight
+                    if new_dist < dist[neighbor]:
+                        dist[neighbor] = new_dist
+
+        # Affichage des résultats
+        for node in dist:
+            d = "∞" if dist[node] == math.inf else dist[node]
+            print(f"Distance minimale de {start} à {node} = {d}")
 
         return dist
 
@@ -154,71 +150,80 @@ class Graph:
     # Bellman-Ford
     # ----------------------
     def bellman_ford(self, start):
+        # Initialisation : toutes les distances à l'infini
         dist = {node: math.inf for node in self.graph}
+        # La distance du sommet de départ à lui-même est 0
         dist[start] = 0
 
+        # Étape 1 : Relaxation des arêtes |V| - 1 fois
+        # (où |V| = nombre de sommets)
         for _ in range(len(self.graph) - 1):
             for w, u, v in self.edges:
+                # Si le chemin passant par u vers v est plus court, on met à jour
                 if dist[u] + w < dist[v]:
                     dist[v] = dist[u] + w
 
+        # Étape 2 : Détection de cycle de poids négatif
+        # Si une relaxation est encore possible, il y a un cycle négatif
         for w, u, v in self.edges:
             if dist[u] + w < dist[v]:
                 print("Cycle négatif détecté !")
                 return None
+
+        # Retourne les distances minimales depuis le sommet de départ
         return dist
 
     # ----------------------
     # Floyd-Warshall
     # ----------------------
     def floyd_warshall(self):
+        # Liste de tous les sommets du graphe
         nodes = list(self.graph.keys())
+
+        # Initialisation de la matrice des distances
+        # dist[i][j] = distance minimale connue de i à j
         dist = {i: {j: math.inf for j in nodes} for i in nodes}
 
+        # Distance nulle pour les boucles (de i à i)
+        # et initialisation des distances directes (arêtes existantes)
         for node in nodes:
             dist[node][node] = 0
             for neighbor, w in self.graph[node]:
                 dist[node][neighbor] = w
 
+        # Triple boucle : programmation dynamique
+        # On teste si passer par un sommet intermédiaire k améliore le chemin i -> j
         for k in nodes:
             for i in nodes:
                 for j in nodes:
                     if dist[i][j] > dist[i][k] + dist[k][j]:
                         dist[i][j] = dist[i][k] + dist[k][j]
 
+        # Retourne la matrice complète des plus courts chemins
         return dist
 
-    # ----------------------
-    # Affichage lisible du graphe
-    # ----------------------
     # ----------------------
     # Affichage graphique du graphe
     # ----------------------
     def afficher_graphe_graphique(self):
         import networkx as nx
         import matplotlib.pyplot as plt
-
         # Création du graphe NetworkX
         G = nx.Graph() if not self.directed else nx.DiGraph()
-
         # Ajout des arêtes et des poids
         for u in self.graph:
             for v, w in self.graph[u]:
                 G.add_edge(u, v, weight=w)
-
         # Position automatique des sommets
         pos = nx.spring_layout(G, seed=42)  # disposition harmonieuse
-
         # Dessin du graphe
         plt.figure(figsize=(10, 7))
         nx.draw_networkx_nodes(G, pos, node_color='skyblue', node_size=1200, edgecolors='black')
         nx.draw_networkx_edges(G, pos, width=2)
         nx.draw_networkx_labels(G, pos, font_size=10, font_weight='bold')
-
         # Poids des arêtes
         edge_labels = nx.get_edge_attributes(G, 'weight')
         nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_color='red', font_size=9)
-
         plt.title("Réseau routier des villes", fontsize=14, fontweight='bold')
         plt.axis('off')
         plt.show()
@@ -268,7 +273,7 @@ if __name__ == "__main__":
         # Nancy
         g.add_edge("Nancy", "Grenoble", 80)
 
-        g.afficher_graphe_graphique()
+
 
         # --- Démonstrations identiques à ton exemple ---
         print("=== Parcours ===")
@@ -290,3 +295,5 @@ if __name__ == "__main__":
         dist = g.floyd_warshall()
         for i in dist:
             print(i, dist[i])
+
+        g.afficher_graphe_graphique()
