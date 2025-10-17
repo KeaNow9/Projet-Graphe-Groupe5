@@ -1,5 +1,7 @@
 from collections import defaultdict
 import math
+import networkx as nx
+import matplotlib.pyplot as plt
 
 class Graph:
     def __init__(self, directed=False):
@@ -206,8 +208,7 @@ class Graph:
     # Affichage graphique du graphe
     # ----------------------
     def afficher_graphe_graphique(self):
-        import networkx as nx
-        import matplotlib.pyplot as plt
+
         # Création du graphe NetworkX
         G = nx.Graph() if not self.directed else nx.DiGraph()
         # Ajout des arêtes et des poids
@@ -297,3 +298,28 @@ if __name__ == "__main__":
             print(i, dist[i])
 
         g.afficher_graphe_graphique()
+
+        # ------------------------------------------
+        # --- GRAPHE 2 : avec des poids négatifs ---
+        # ------------------------------------------
+        g2 = Graph(directed=True)  # ici on le rend orienté pour bien montrer l'effet des signes
+
+        g2.add_edge("A", "B", 4)
+        g2.add_edge("A", "C", 2)
+        g2.add_edge("B", "C", -1)  # arête négative
+        g2.add_edge("B", "D", 2)
+        g2.add_edge("C", "D", 3)
+        g2.add_edge("C", "E", -2)  # arête négative
+        g2.add_edge("E", "D", 1)
+
+        # 👉 Pas de cycle négatif ici
+
+        print("\n=== Bellman-Ford sur g2 (A) ===")
+        print("Bellman-Ford (A) :", g2.bellman_ford("A"))
+
+        print("\n=== Floyd-Warshall sur g2 ===")
+        dist2 = g2.floyd_warshall()
+        for i in dist2:
+            print(i, dist2[i])
+
+        g2.afficher_graphe_graphique()
