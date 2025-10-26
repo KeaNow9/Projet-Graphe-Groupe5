@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Graphes - Flask + D3</title>
+  <link rel="stylesheet" href="/static/css/styles.css"/>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Projet Graphes – Groupe 5 LSI2</h1>
+  </header>
+
+  <section class="controls">
+
+    <label>Graphe
+      <select id="graphSelect">
+      <option value="fr_routes">Réseau FR (grand)</option>
+      <option value="demo_small">Demo (petit)</option>
+    </select>
+
+      <span id="directedBadge" class="badge"></span>
+
+    </label>
+    <label>Algorithme
+      <select id="algo">
+        <option value="bfs">BFS</option>
+        <option value="dfs">DFS</option>
+        <option value="dijkstra">Dijkstra</option>
+        <option value="kruskal">Kruskal (MST)</option>
+         <option value="prim">Prim (MST)</option>
+        <option value="bellman">Bellman–Ford</option>
+        <option value="floyd">Floyd–Warshall</option>
+
+      </select>
+   <label>Source
+  <select id="source"></select>
+</label>
+
+<label>Cible
+  <select id="target"></select>
+</label>
+  <button id="runBtn">Exécuter</button>
+  <span id="status"></span>
+  </section>
+
+ <main class="grid">
+  <div id="graph"></div>
+
+  <aside id="result" class="card">
+    <div class="card-header">
+      <h2>Résultats</h2>
+      <button id="resetZoom" class="ghost">Reset zoom</button>
+    </div>
+
+    <!-- résumé -->
+    <div id="summary" class="summary"></div>
+
+    <!-- chips / ordre de visite -->
+    <div id="chips" class="chips"></div>
+
+    <!-- tableau (distances, matrice FW, etc.) -->
+    <div class="table-wrap">
+      <table id="table" class="table">
+        <thead id="thead"></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- JSON brut (debug) -->
+    <details class="raw">
+      <summary>Voir réponse JSON</summary>
+      <pre id="output"></pre>
+    </details>
+  </aside>
+</main>
+
+
+  <footer>
+    <small>Remplace les fonctions dans <code>algorithms.py</code> par tes implémentations pour le rendu final.</small>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -1,30 +1,62 @@
-# Python
+# ==========================
+# 🐍 Python
+# ==========================
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*$py.class
 
-# Virtual environment
-venv/
-env/
+# ==========================
+# 🧪 Virtual environments (tes deux venv précis)
+# ==========================
 .venv/
+flask_d3_graph_app/flask_d3_graph_app/.venv/
 
-# IDE / Editor
+# ==========================
+# 🧰 IDE / Editors
+# ==========================
 .idea/
 .vscode/
 *.iml
 
-# System files
+# ==========================
+# 💾 System files
+# ==========================
 .DS_Store
 Thumbs.db
 
-# Logs and cache
+# ==========================
+# 🧾 Logs / Cache
+# ==========================
 *.log
 *.cache
+*.tmp
+*.bak
 
-# Data / generated files
+# ==========================
+# 📦 Build / Packaging
+# ==========================
+dist/
+build/
+*.egg-info/
+pip-wheel-metadata/
+
+# ==========================
+# 🌐 Flask-specific
+# ==========================
+instance/
+*.db
+*.sqlite3
+.env
+*.env
+.env.*
+
+# ==========================
+# 📊 Data / Generated
+# ==========================
 *.csv
 *.json
+*.pdf
 *.png
 *.jpg
-*.pdf
+*.jpeg
+*.svg

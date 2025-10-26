@@ -1,3 +1,98 @@
+import math
+from algorithmes.Partie_generale.graph2 import Graph
+
+
+# ----------------------
+# Bellman-Ford
+# ----------------------
+def bellman_ford(self, start):
+    dist = {node: math.inf for node in self.graph}
+    dist[start] = 0
+
+    for _ in range(len(self.graph) - 1):
+        for w, u, v in self.edges:
+            if dist[u] + w < dist[v]:
+                dist[v] = dist[u] + w
+
+    for w, u, v in self.edges:
+        if dist[u] + w < dist[v]:
+            print("Cycle négatif détecté !")
+            return None
+    return dist
+
+
+# ----------------------
+# Floyd-Warshall
+# ----------------------
+def floyd_warshall(self):
+    nodes = list(self.graph.keys())
+    dist = {i: {j: math.inf for j in nodes} for i in nodes}
+
+    for node in nodes:
+        dist[node][node] = 0
+        for neighbor, w in self.graph[node]:
+            dist[node][neighbor] = w
+
+    for k in nodes:
+        for i in nodes:
+            for j in nodes:
+                if dist[i][j] > dist[i][k] + dist[k][j]:
+                    dist[i][j] = dist[i][k] + dist[k][j]
+
+    return dist
+
+
+if __name__ == "__main__":
+        g = Graph(directed=False)
+
+        # --- Arêtes d'après le schéma ---
+        # Rennes
+        g.add_edge("Rennes", "Nantes", 45)
+        g.add_edge("Rennes", "Caen", 75)
+        g.add_edge("Rennes", "Paris", 110)
+        g.add_edge("Rennes", "Bordeaux", 130)
+
+        # Nantes
+        g.add_edge("Nantes", "Paris", 80)
+        g.add_edge("Nantes", "Bordeaux", 90)
+
+        # Bordeaux
+        g.add_edge("Bordeaux", "Paris", 150)
+        g.add_edge("Bordeaux", "Lyon", 100)
+
+        # Caen
+        g.add_edge("Caen", "Paris", 50)
+        g.add_edge("Caen", "Lille", 65)
+
+        # Paris
+        g.add_edge("Paris", "Lille", 70)
+        g.add_edge("Paris", "Dijon", 60)
+
+        # Lille
+        g.add_edge("Lille", "Dijon", 120)
+        g.add_edge("Lille", "Nancy", 100)
+
+        # Dijon
+        g.add_edge("Dijon", "Nancy", 75)
+        g.add_edge("Dijon", "Lyon", 70)
+        g.add_edge("Dijon", "Grenoble", 75)
+
+        # Lyon
+        g.add_edge("Lyon", "Grenoble", 40)
+        g.add_edge("Lyon", "Nancy", 90)
+
+        # Nancy
+        g.add_edge("Nancy", "Grenoble", 80)
+
+        g.afficher_graphe_graphique()
+
+        print("Bellman-Ford (depuis Bordeaux) :", bellman_ford(g, "Bordeaux"))
+        #print("Bellman-Ford (depuis Bordeaux) :", g.bellman_ford("Bordeaux"))
+
+        print("\n=== Floyd-Warshall ===")
+        dist_fw = floyd_warshall(g)
+        for i in dist_fw:
+            print(i, dist_fw[i])
 from algorithmes.Partie_generale.graph2 import Graph
 import math
 
