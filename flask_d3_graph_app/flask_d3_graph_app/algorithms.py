@@ -75,13 +75,13 @@ class Graph:
                 n = parent[n]
             return n
 
-        mst, total = [], 0
+        acpm, total = [], 0
         for w, u, v in sorted(self.edges):
             if find(u) != find(v):
                 parent[find(v)] = find(u)
-                mst.append((u, v, w))
+                acpm.append((u, v, w))
                 total += w
-        return mst, total
+        return acpm, total
 
     # ----------------------
     # Prim
@@ -89,24 +89,24 @@ class Graph:
     def prim(self, start):
         if self.directed:
             raise ValueError("Prim ne peut être utilisé que sur un graphe non orienté !")
-        visited = set([start])
-        edges = [(w, start, v) for v, w in self.graph[start]]
-        mst = []
-        total_cost = 0
-        while edges:
+        sommets_visites = set([start])
+        aretes = [(w, start, v) for v, w in self.graph[start]]
+        acpm = []
+        cout_total = 0
+        while aretes:
             min_index = 0
-            for i in range(len(edges)):
-                if edges[i][0] < edges[min_index][0]:
+            for i in range(len(aretes)):
+                if aretes[i][0] < aretes[min_index][0]:
                     min_index = i
-            w, u, v = edges.pop(min_index)
-            if v not in visited:
-                visited.add(v)
-                mst.append((u, v, w))
-                total_cost += w
+            w, u, v = aretes.pop(min_index)
+            if v not in sommets_visites:
+                sommets_visites.add(v)
+                acpm.append((u, v, w))
+                cout_total += w
                 for to, weight in self.graph[v]:
-                    if to not in visited:
-                        edges.append((weight, v, to))
-        return mst, total_cost
+                    if to not in sommets_visites:
+                        aretes.append((weight, v, to))
+        return acpm, cout_total
 
     # ----------------------
     # Dijkstra
