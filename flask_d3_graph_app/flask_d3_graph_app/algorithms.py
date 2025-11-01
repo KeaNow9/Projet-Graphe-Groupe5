@@ -136,33 +136,57 @@ class Graph:
     # Bellman-Ford
     # ----------------------
     def bellman_ford(self, start):
-        dist = {node: math.inf for node in self.graph}
+        sommets = set(self.graph.keys())
+        for _, u, v in self.edges:
+            sommets.add(u);
+            sommets.add(v)
+        dist = {s: math.inf for s in sommets}
         dist[start] = 0
+
+        # On effectue |V|-1 passes de relaxation (V = nombre de sommets)
         for _ in range(len(self.graph) - 1):
-            for w, u, v in self.edges:
-                if dist[u] + w < dist[v]:
-                    dist[v] = dist[u] + w
-        for w, u, v in self.edges:
-            if dist[u] + w < dist[v]:
+            # Pour chaque arête (origine -> dest) de poids 'poids'
+            for poids, origine, dest in self.edges:
+                # Si on trouve un chemin plus court vers 'dest', on met à jour
+                if dist[origine] + poids < dist[dest]:
+                    dist[dest] = dist[origine] + poids
+
+        # Détection d’un cycle de poids négatif : une 2e relaxation possible signifie cycle négatif
+        for poids, origine, dest in self.edges:
+            if dist[origine] + poids < dist[dest]:
+                # Convention : on renvoie None si un cycle négatif est présent
                 return None
+
+        # Distances finales depuis 'start' vers chaque sommet (inf si inatteignable)
         return dist
 
     # ----------------------
     # Floyd-Warshall
     # ----------------------
     def floyd_warshall(self):
-        nodes = list(self.graph.keys())
-        dist = {i: {j: math.inf for j in nodes} for i in nodes}
-        for node in nodes:
-            dist[node][node] = 0
-            for neighbor, w in self.graph[node]:
-                dist[node][neighbor] = w
-        for k in nodes:
-            for i in nodes:
-                for j in nodes:
-                    if dist[i][j] > dist[i][k] + dist[k][j]:
-                        dist[i][j] = dist[i][k] + dist[k][j]
+        # Liste des sommets du graphe
+        sommets = list(self.graph.keys())
+
+        # Matrice des distances : infini par défaut entre toutes les paires (i, j)
+        dist = {i: {j: math.inf for j in sommets} for i in sommets}
+
+        # Distance nulle sur la diagonale et initialisation avec les arêtes directes
+        for sommet in sommets:
+            dist[sommet][sommet] = 0  # coût nul pour aller de i à i
+            for voisin, poids in self.graph[sommet]:
+                dist[sommet][voisin] = poids  # coût de l’arête directe (sommet -> voisin)
+
+        # Triple boucle : on tente d'améliorer i -> j en passant par un sommet 'inter'
+        for inter in sommets:
+            for i in sommets:
+                for j in sommets:
+                    # Si i -> inter -> j est plus court que i -> j actuel, on met à jour
+                    if dist[i][j] > dist[i][inter] + dist[inter][j]:
+                        dist[i][j] = dist[i][inter] + dist[inter][j]
+
+        # Matrice finale des plus courts chemins entre toutes les paires (inf si inatteignable)
         return dist
+
 
 
 # ===========================================================
@@ -256,14 +280,22 @@ def prim(G: nx.Graph, start: str) -> Tuple[List[Tuple[str, str, float]], float]:
     edges = [(str(u), str(v), float(w)) for (u, v, w) in mst]
     return edges, float(total)
 
-def bellman_ford(G: nx.Graph, source: str) -> Dict[str, float]:
+def bellman_ford(G: nx.Graph, source: str):
     UG = _nx_to_user_graph(G)
     dist = UG.bellman_ford(source)
     if dist is None:
         return {"__negative_cycle__": 1.0}
-    return {str(k): (float(v) if not math.isinf(v) else float("inf")) for k, v in dist.items()}
+    return {str(k): (None if math.isinf(v) else float(v)) for k, v in dist.items()}
 
-def floyd_warshall_all_pairs(G: nx.Graph) -> Dict[str, Dict[str, float]]:
+
+def floyd_warshall_all_pairs(G: nx.Graph):
     UG = _nx_to_user_graph(G)
     dist = UG.floyd_warshall()
-    return {str(i): {str(j): (float(d) if not math.isinf(d) else float("inf")) for j, d in row.items()} for i, row in dist.items()}
+    return {
+        str(i): {
+            str(j): (None if math.isinf(d) else float(d))
+            for j, d in row.items()
+        }
+        for i, row in dist.items()
+    }
+
