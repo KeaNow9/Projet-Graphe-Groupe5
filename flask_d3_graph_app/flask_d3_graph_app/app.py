@@ -124,11 +124,15 @@ def api_run():
         edges_fmt = [{"source": u, "target": v} for u, v, _ in mst_edges]
         result = {"tree_edges": edges_fmt, "total": total, "edges_to_highlight": edges_fmt}
 
+
     elif algo == "bellman":
-        dist = bellman_ford(G, source)       # ✅ utilise la source choisie
-        if isinstance(dist, dict) and "__negative_cycle__" in dist:
+        table = bellman_ford(G, source)  # ⚡ renvoie {"table": [...]}
+        if isinstance(table, dict) and "__negative_cycle__" in table:
             return jsonify({"error": "Cycle négatif détecté"}), 400
-        result = {"distances_from_source": dist, "nodes_to_highlight": [source]}
+        result = {
+            "table": table["table"],  # envoie directement le tableau
+            "nodes_to_highlight": [source]  # met en évidence la source
+        }
 
     elif algo == "floyd":
         dist = floyd_warshall_all_pairs(G)

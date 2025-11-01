@@ -220,18 +220,22 @@ function renderResult(algo, data){
     setTable(['Source (Par de)','Cible (Arrive sur)'], rows);
   }
 
-  if(algo === 'bellman'){
-    setSummary([
-      ['Algorithme', 'Bellman–Ford'],
-      ['Source', document.getElementById('source').value || '—']
+if(algo === 'bellman'){
+  setSummary([
+    ['Algorithme', 'Bellman–Ford'],
+    ['Source', document.getElementById('source').value || '—']
+  ]);
+  if (data.error){
+    setChips(['Cycle négatif détecté']);
+  } else if (data.table) {
+    const rows = data.table.map(r => [
+      r.node,
+      r.distance !== null ? r.distance : '∞',
+      r.predecessor || '-'
     ]);
-    if (data.error){
-      setChips(['Cycle négatif détecté']);
-    } else {
-      const pairs = Object.entries(data.distances_from_source || {}).map(([k,v]) => [k, v]);
-      setTable(['Noeud','Distance'], pairs);
-    }
+    setTable(['Sommet','Distance','Prédécesseur'], rows);
   }
+}
 
   if(algo === 'floyd'){
     setSummary([

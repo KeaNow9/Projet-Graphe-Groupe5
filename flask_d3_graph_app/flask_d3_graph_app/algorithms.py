@@ -135,30 +135,33 @@ class Graph:
     # ----------------------
     # Bellman-Ford
     # ----------------------
+    # ----------------------
+    # Bellman-Ford avec prédécesseurs
+    # ----------------------
     def bellman_ford(self, start):
         sommets = set(self.graph.keys())
         for _, u, v in self.edges:
-            sommets.add(u);
+            sommets.add(u)
             sommets.add(v)
+
         dist = {s: math.inf for s in sommets}
+        pred = {s: None for s in sommets}  # dictionnaire des prédécesseurs
         dist[start] = 0
 
-        # On effectue |V|-1 passes de relaxation (V = nombre de sommets)
-        for _ in range(len(self.graph) - 1):
-            # Pour chaque arête (origine -> dest) de poids 'poids'
+        # |V|-1 passes de relaxation
+        for _ in range(len(sommets) - 1):
             for poids, origine, dest in self.edges:
-                # Si on trouve un chemin plus court vers 'dest', on met à jour
                 if dist[origine] + poids < dist[dest]:
                     dist[dest] = dist[origine] + poids
+                    pred[dest] = origine  # mise à jour du prédécesseur
 
-        # Détection d’un cycle de poids négatif : une 2e relaxation possible signifie cycle négatif
+        # Détection de cycle de poids négatif
         for poids, origine, dest in self.edges:
             if dist[origine] + poids < dist[dest]:
-                # Convention : on renvoie None si un cycle négatif est présent
-                return None
+                return None  # convention : None si cycle négatif
 
-        # Distances finales depuis 'start' vers chaque sommet (inf si inatteignable)
-        return dist
+        # Retourne maintenant distances + prédécesseurs
+        return dist, pred
 
     # ----------------------
     # Floyd-Warshall
@@ -282,11 +285,22 @@ def prim(G: nx.Graph, start: str) -> Tuple[List[Tuple[str, str, float]], float]:
 
 def bellman_ford(G: nx.Graph, source: str):
     UG = _nx_to_user_graph(G)
-    dist = UG.bellman_ford(source)
-    if dist is None:
+    result = UG.bellman_ford(source)
+    if result is None:
         return {"__negative_cycle__": 1.0}
-    return {str(k): (None if math.isinf(v) else float(v)) for k, v in dist.items()}
 
+    dist, pred = result
+
+    # Construit un tableau de lignes pour le frontend
+    table_rows = []
+    for node in sorted(UG.graph.keys()):
+        table_rows.append({
+            "node": str(node),
+            "distance": None if math.isinf(dist[node]) else float(dist[node]),
+            "predecessor": None if pred[node] is None else str(pred[node])
+        })
+
+    return {"table": table_rows}
 
 def floyd_warshall_all_pairs(G: nx.Graph):
     UG = _nx_to_user_graph(G)
