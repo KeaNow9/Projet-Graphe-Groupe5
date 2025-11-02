@@ -151,7 +151,7 @@ class Graph:
         # |V|-1 passes de relaxation
         for _ in range(len(sommets) - 1):
             for poids, origine, dest in self.edges:
-                if dist[origine] + poids < dist[dest]:
+                if dist[origine ] + poids < dist[dest]:
                     dist[dest] = dist[origine] + poids
                     pred[dest] = origine  # mise à jour du prédécesseur
 
