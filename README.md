@@ -21,11 +21,12 @@ Chaque algorithme sera testé sur un graphe pondéré où les sommets représent
 - [x] **Floyd-Warshall** (tous les plus courts chemins)
 
 ## 🖥️ Structure du projet
+```text
 Projet-Graphe-Groupe5/
 │
 ├── algorithmes/                          # Module principal regroupant la logique des algorithmes
 │   ├── mainTest/                         # Ancien contenu de tests
-│   ├── Partie 1 (BFS, DFS)/              # ⚠️ Vide — le contenu a été déplacé dans graph.py
+│   ├── Partie 1 (BFS, DFS)/              # ⚠️ Vide — contenu déplacé dans graph.py
 │   ├── Partie 2 (Kruskal Prim)/          # ⚠️ Vide — déplacé dans graph.py
 │   ├── Partie 3 (Dijkstra)/              # ⚠️ Vide — déplacé dans graph.py
 │   ├── Partie 4 (Bellman-Ford, Floyd-Warshall)/   # ⚠️ Vide — déplacé dans graph.py
@@ -35,9 +36,9 @@ Projet-Graphe-Groupe5/
 │
 ├── flask_d3_graph_app/                   # Application Flask + visualisation D3.js
 │   └── flask_d3_graph_app/
-│       ├── static/                       # Ressources statiques (styles, JS…)
-│       │   ├── css/                      # Feuilles de styles
-│       │   └── js/                       # Scripts JavaScript
+│       ├── static/                       # Ressources statiques (styles, scripts…)
+│       │   ├── css/
+│       │   └── js/
 │       │
 │       ├── templates/                    # Templates HTML utilisés par Flask
 │       │   └── index.html                # Page principale affichant le graphe
@@ -48,9 +49,11 @@ Projet-Graphe-Groupe5/
 │       └── README.md                     # Instructions pour lancer l’interface web
 │
 ├── .gitignore                            # Fichiers/dossiers exclus du versionnage
-├── main.py                               # Launcher / script général
-├── README.md                             # ✅ README principal (celui-ci)
-└── requirements.txt                      # Dépendances générales (tests des algorithmes)
+├── main.py                               # Launcher général
+├── README.md                             # ✅ README principal
+└── requirements.txt                      # Dépendances générales
+```
+
 
 
 
