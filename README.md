@@ -23,34 +23,35 @@ Chaque algorithme sera testé sur un graphe pondéré où les sommets représent
 ## 🖥️ Structure du projet
 Projet-Graphe-Groupe5/
 │
-├── algorithmes/                          # Module de gestion des algorithmes
-│   ├── mainTest/                          # (Ancien contenu de tests)
-│   ├── Partie 1 (BFS, DFS)/               # (⚠️ Vidé — déplacé dans graph.py)
-│   ├── Partie 2 (Kruskal Prim)/           # (⚠️ Vidé — déplacé dans graph.py)
-│   ├── Partie 3 (Dijkstra)/               # (⚠️ Vidé — déplacé dans graph.py)
-│   ├── Partie 4 (Bellman-Ford, Floyd-Warshall)/   # (⚠️ Vidé — déplacé dans graph.py)
+├── algorithmes/                          # Module principal regroupant la logique des algorithmes
+│   ├── mainTest/                         # Ancien contenu de tests
+│   ├── Partie 1 (BFS, DFS)/              # ⚠️ Vide — le contenu a été déplacé dans graph.py
+│   ├── Partie 2 (Kruskal Prim)/          # ⚠️ Vide — déplacé dans graph.py
+│   ├── Partie 3 (Dijkstra)/              # ⚠️ Vide — déplacé dans graph.py
+│   ├── Partie 4 (Bellman-Ford, Floyd-Warshall)/   # ⚠️ Vide — déplacé dans graph.py
 │   └── Partie_generale/
 │       ├── __init__.py
-│       └── graph.py                       # ✅ Contient désormais l’ensemble des algorithmes
+│       └── graph.py                      # ✅ Contient désormais l’ensemble des algorithmes
 │
-├── flask_d3_graph_app/                    # Application Flask + visualisation
+├── flask_d3_graph_app/                   # Application Flask + visualisation D3.js
 │   └── flask_d3_graph_app/
-│       ├── static/                        # Fichiers statiques style + anim
-│       │   ├── css/
-│       │   └── js/
+│       ├── static/                       # Ressources statiques (styles, JS…)
+│       │   ├── css/                      # Feuilles de styles
+│       │   └── js/                       # Scripts JavaScript
 │       │
-│       ├── templates/                     # Templates HTML Flask
-│       │   └── index.html
+│       ├── templates/                    # Templates HTML utilisés par Flask
+│       │   └── index.html                # Page principale affichant le graphe
 │       │
-│       ├── algorithms.py                  # Intégration des fonctions du module graph.py
-│       ├── app.py                         # Application Flask
-│       ├── requirements.txt               # Dépendances interface web
-│       └── README.md                      # Explication pour lancer l'interface web
+│       ├── algorithms.py                 # Interface entre Flask et graph.py
+│       ├── app.py                        # Point d’entrée de l’application Flask
+│       ├── requirements.txt              # Dépendances nécessaires à l’interface
+│       └── README.md                     # Instructions pour lancer l’interface web
 │
-├── .gitignore
-├── main.py
-├── README.md                              # README principal celui qui vous êtes entrain de lire
-└── requirements.txt                       # Dépendances test graph brute
+├── .gitignore                            # Fichiers/dossiers exclus du versionnage
+├── main.py                               # Launcher / script général
+├── README.md                             # ✅ README principal (celui-ci)
+└── requirements.txt                      # Dépendances générales (tests des algorithmes)
+
 
 
 
